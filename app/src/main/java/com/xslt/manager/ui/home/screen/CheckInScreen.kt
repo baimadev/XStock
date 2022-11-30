@@ -37,7 +37,7 @@ fun CheckInScreen(viewModel: HomeViewModel, onLeftClick: () -> Unit) {
 
     Header(modifier = Modifier.fillMaxSize(), onLeftClick = {
         onLeftClick.invoke()
-    }, leftStr = "返回首页", title = "登记入库") {
+    }, leftStr = "返回", title = "登记入库") {
         Spacer(modifier = Modifier.height(20.dp))
 
         ConstraintLayout(modifier = Modifier.fillMaxSize().background(backGround1)) {

@@ -65,6 +65,8 @@ class HomeViewModel : BaseViewModel() {
             val findResult = tyreListInfo.value.find { it.isSame(tyreInfoModel) }
             if (findResult != null) {
                 findResult.count += tyreInfoModel.count
+                findResult.inPrice = tyreInfoModel.inPrice
+                findResult.outPrice = tyreInfoModel.outPrice
                 tyreInfoDao?.updateTyreInfoModel(findResult)
             } else {
                 tyreListInfo.value.add(tyreInfoModel)
@@ -78,6 +80,17 @@ class HomeViewModel : BaseViewModel() {
         launchOnIO {
             tyreInfoDao?.updateTyreInfoModel(tyreInfoModel)
             showToast("保存成功！")
+        }
+    }
+
+    //删除
+    fun deleteTyreModel(tyreInfoModel: TyreInfoModel){
+        launchOnIO {
+            if (tyreListInfo.value.contains(tyreInfoModel)){
+                tyreListInfo.value.remove(tyreInfoModel)
+            }
+            tyreInfoDao?.delete(tyreInfoModel)
+            showToast("删除成功！")
         }
     }
 

@@ -35,6 +35,7 @@ import com.xslt.manager.ui.theme.bkTransparent
 import com.xslt.manager.ui.theme.btColor
 import com.xslt.manager.util.InputEditText
 import com.xslt.manager.util.hdp
+import com.xslt.manager.util.spi
 import com.xslt.manager.util.wdp
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -119,7 +120,15 @@ fun StockManageScreen(viewModel: HomeViewModel, onLeftClick: () -> Unit) {
                     tyreInfoModel = tyreInfoModel.value!!,
                     onSaveClick = {
                         viewModel.updateTyreModel(it)
-                    }) {
+                    },
+                    onDeleteClick = {
+                        viewModel.deleteTyreModel(it)
+                        showFirstList.value = true
+                        showSecondList.value = false
+                        showTyreInfo.value = false
+                        showSellScreen.value = false
+                    }
+                ) {
                     if (it.count <= 0) {
                         Toast.makeText(context, "库存不足", Toast.LENGTH_SHORT).show()
                     } else {
@@ -179,8 +188,9 @@ fun BrandItem(name: String, onClick: () -> Unit) {
 fun TyreInfoWidget(
     homeViewModel: HomeViewModel,
     tyreInfoModel: TyreInfoModel,
-    countValue:MutableState<String>,
+    countValue: MutableState<String>,
     onSaveClick: (TyreInfoModel) -> Unit,
+    onDeleteClick: (TyreInfoModel) -> Unit,
     onSellClick: (TyreInfoModel) -> Unit,
 ) {
     Box(contentAlignment = Alignment.TopCenter, modifier = Modifier.fillMaxSize()) {
@@ -262,13 +272,13 @@ fun TyreInfoWidget(
                         tyreInfoModel.count != countValue.value.toInt()
                     ) {
                         homeViewModel.showToast("请先保存修改！")
-                    }else{
+                    } else {
                         onSellClick.invoke(tyreInfoModel)
                     }
                 }, colors = ButtonDefaults.buttonColors(containerColor = btColor)) {
                     Text(text = "卖出", style = TextStyle(fontSize = 20.sp))
                 }
-                Spacer(modifier = Modifier.width(300.wdp))
+                Spacer(modifier = Modifier.width(150.wdp))
 
                 Button(onClick = {
                     tyreInfoModel.inPrice = inPrices.value.toInt()
@@ -277,6 +287,14 @@ fun TyreInfoWidget(
                     onSaveClick.invoke(tyreInfoModel)
                 }, colors = ButtonDefaults.buttonColors(containerColor = btColor)) {
                     Text(text = "保存修改", style = TextStyle(fontSize = 20.sp))
+                }
+
+                Spacer(modifier = Modifier.width(150.wdp))
+
+                Button(onClick = {
+                    onDeleteClick.invoke(tyreInfoModel)
+                }, colors = ButtonDefaults.buttonColors(containerColor = btColor)) {
+                    Text(text = "删除", style = TextStyle(fontSize = 20.sp))
                 }
             }
 
@@ -289,7 +307,7 @@ fun TyreInfoWidget(
 fun Header(
     modifier: Modifier,
     title: String,
-    leftStr: String = "返回上一级",
+    leftStr: String = "返回",
     onLeftClick: () -> Unit,
     onRightClick: (() -> Unit)? = null,
     content: @Composable () -> Unit
@@ -318,7 +336,7 @@ fun Header(
                     }
                     .clickable { onLeftClick.invoke() })
 
-            Text(text = leftStr, modifier = Modifier
+            Text(text = leftStr, fontSize = 15.spi, modifier = Modifier
                 .constrainAs(desc) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
@@ -328,7 +346,7 @@ fun Header(
 
             Text(
                 text = title,
-                style = TextStyle(fontSize = 20.sp),
+                style = TextStyle(fontSize = 20.spi),
                 modifier = Modifier.constrainAs(titleFlag) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
